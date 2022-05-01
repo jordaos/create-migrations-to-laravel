@@ -133,6 +133,6 @@ with open("input.txt") as input_file:
 
     if last_line_was_number and not line[0].isdigit():
       create_new_entity_table(model_name, columns)
-
+    
     if not line[0].isdigit():
       last_line_was_number = False

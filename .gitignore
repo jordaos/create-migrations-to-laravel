@@ -1,1 +1,4 @@
 input.txt
+
+Models/*.php
+database/*.php

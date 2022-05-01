@@ -1,11 +1,16 @@
 from datetime import datetime
 import time
 
+file_count = 0
+
 def create_insert_file(filename, mapper):
-  time.sleep(1)
+  # time.sleep(1)
+  global file_count
   now = datetime.now()
 
-  now_str = now.strftime("%Y_%m_%d_%H%M%S")
+  now_str = now.strftime("%Y_%m_%d_%H%M")
+  now_str = now_str + str(file_count).zfill(2)
+  file_count += 1
 
   with open("templates/insert.php") as f:
     lines = f.readlines()
@@ -22,10 +27,13 @@ def create_insert_file(filename, mapper):
         f1.write(line_result)
 
 def create_table_file(table_name, mapper):
-  time.sleep(1)
+  # time.sleep(1)
+  global file_count
   now = datetime.now()
 
-  now_str = now.strftime("%Y_%m_%d_%H%M%S")
+  now_str = now.strftime("%Y_%m_%d_%H%M")
+  now_str = now_str + str(file_count).zfill(2)
+  file_count += 1
 
   with open("templates/create_table.php") as f:
     lines = f.readlines()
@@ -57,10 +65,13 @@ def create_model_file(model_name, mapper):
         f1.write(line_result)
 
 def create_insert_column_structure_file(filename, mapper):
-  time.sleep(1)
+  # time.sleep(1)
+  global file_count
   now = datetime.now()
 
-  now_str = now.strftime("%Y_%m_%d_%H%M%S")
+  now_str = now.strftime("%Y_%m_%d_%H%M")
+  now_str = now_str + str(file_count).zfill(2)
+  file_count += 1
 
   with open("templates/insert_column_structure.php") as f:
     lines = f.readlines()
