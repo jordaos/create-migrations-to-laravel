@@ -23,7 +23,26 @@ def short_text(text):
     'despesas': 'des',
     'orcamentarias': 'orcam',
     'orcamentaria': 'orcam',
-    'bancarias': 'bancar'
+    'bancarias': 'bancar',
+    'administrativo': 'adm',
+    'administrativos': 'adm',
+    'responsavel': 'resp',
+    'servicos': 'serv',
+    'juridico': 'jur',
+    'desclassificatorio': 'descl',
+    'fornecedor': 'forn',
+    'orcamento': 'orc',
+    'estimado': 'est',
+    'objeto': 'obj',
+    'processo': 'proc',
+    'processos': 'proc',
+    'aquisicao': 'aquis',
+    'homologacao': 'homl',
+    'ratificacao': 'rat',
+    'numero': 'num',
+    'publicacoes': 'publ',
+    'identificacao': 'iden',
+    'licitante': 'lic'
   }
 
   new_text = ''
@@ -42,6 +61,7 @@ def create_camel_case(text, low_first_letter = True):
   text = re.sub("([\(\[]).*?([\)\]])", "\g<1>\g<2>", text)
   text = text.replace("()", "")
   text = text.replace(",", "")
+  text = text.replace('"', '')
   text = text.replace("-", " ")
 
   text = short_text(text)
@@ -129,7 +149,7 @@ def create_new_entity_table(model_name, columns):
   create_model_file(model_name, model_mapper)
   create_insert_column_structure_file(insert_column_structure_filename, insert_column_structure_mapper)
 
-with open("data/BAL.txt") as input_file:
+with open("data/OSC.txt") as input_file:
   input_file_lines = input_file.readlines()
 
   name = ""
@@ -142,15 +162,15 @@ with open("data/BAL.txt") as input_file:
   columns = []
 
   for line in input_file_lines:
-    if ("NOME DA TABELA" in line):
+    if ("NOME DA TABELA:" in line):
       name = get_normalized_string(line, "NOME DA TABELA:")
       model_name = get_model_name(line)
       columns = []
-    if ("NOME DO ARQUIVO" in line):
+    if ("NOME DO ARQUIVO:" in line):
       example_filename = get_normalized_string(line, "NOME DO ARQUIVO:")
-    if ("FREQUÊNCIA DE ENVIO" in line):
+    if ("FREQUÊNCIA DE ENVIO:" in line):
       table_frequency = get_normalized_string(line, "FREQUÊNCIA DE ENVIO:")
-    if ("TIPO DE DOCUMENTO" in line):
+    if ("TIPO DE DOCUMENTO:" in line):
       document_type = get_normalized_string(line, "TIPO DE DOCUMENTO:")
       create_table_structure_insertion(name, model_name, example_filename, table_frequency, document_type)
 
