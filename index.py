@@ -6,6 +6,8 @@ from create_file_from_template import create_insert_file, create_table_file, cre
 
 sw = stopwords.words('portuguese')
 
+max_snake_case = 60
+
 def short_text(text):
   mapper = {
     'transferencia': 'transf',
@@ -42,18 +44,43 @@ def short_text(text):
     'numero': 'num',
     'publicacoes': 'publ',
     'identificacao': 'iden',
-    'licitante': 'lic'
+    'licitante': 'lic',
+    'destinacao': 'dest',
+    'remanejamentos': 'reman',
+    'transposicoes': 'transpos',
+    'transferencias': 'transf',
+    'dotacoes': 'dot',
+    'informatica': 'inf',
+    'geracao': 'ger',
+    'registros': 'reg',
+    'contabeis': 'cont',
+    'remetidos': 'rem',
+    'desincorporacao': 'desin',
+    'reavaliacao': 'reav',
+    'patrimonio': 'patr',
+    'incorporados': 'incorp',
+    'redutoras': 'redut',
+    'ajuste': 'ajus',
+    'situacoes': 'sit',
+    'depreciacao': 'depr',
+    'amortizacao': 'amort',
+    'exaustao': 'exaus',
+    'reversao': 'revers',
+    'recuperavel': 'recup',
+    'unidade': 'uni',
+    'reducao': 'red'
   }
 
   new_text = ''
   for word in text.split(" "):
     lower_word = word.lower()
 
-    if lower_word in mapper:
-      mapped_word = mapper[lower_word]
-      new_text += mapped_word + ' '
-    else:
-      new_text += word + ' '
+    if lower_word != 'de':
+      if lower_word in mapper:
+        mapped_word = mapper[lower_word]
+        new_text += mapped_word + ' '
+      else:
+        new_text += word + ' '
   return new_text
 
 def create_camel_case(text, low_first_letter = True):
@@ -63,6 +90,7 @@ def create_camel_case(text, low_first_letter = True):
   text = text.replace(",", "")
   text = text.replace('"', '')
   text = text.replace("-", " ")
+  text = text.replace("/", " ")
 
   text = short_text(text)
   text = ''.join([k.capitalize() for k in text.split(" ") if k not in sw])
@@ -88,6 +116,13 @@ def get_normalized_string(line, replace = ""):
 
 def camel_case_to_snake_case(text):
   return re.sub(r'(?<!^)(?=[A-Z])', '_', text).lower()
+
+def crop_text(text):
+  if len(text) > max_snake_case:
+    text = text[:max_snake_case]
+    if text[-1] == '_':
+      text = text[:-1]
+  return text
 
 def create_table_structure_insertion(name, model_name, example_filename, table_frequency, document_type):
   class_name = model_name + 'InTableStructures'
@@ -149,7 +184,7 @@ def create_new_entity_table(model_name, columns):
   create_model_file(model_name, model_mapper)
   create_insert_column_structure_file(insert_column_structure_filename, insert_column_structure_mapper)
 
-with open("data/OSC.txt") as input_file:
+with open("data/RPP.txt") as input_file:
   input_file_lines = input_file.readlines()
 
   name = ""
@@ -181,7 +216,7 @@ with open("data/OSC.txt") as input_file:
       camelCaseLine = create_camel_case(normalized_line)
       camelCaseLineSplit = camelCaseLine.split(".")
       lineNumber = camelCaseLineSplit[0]
-      variableName = camel_case_to_snake_case(camelCaseLineSplit[1])
+      variableName = crop_text(camel_case_to_snake_case(camelCaseLineSplit[1]))
       columns.append((lineNumber, variableName, description))
       last_line_was_number = True
 
