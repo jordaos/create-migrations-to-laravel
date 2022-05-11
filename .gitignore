@@ -1,4 +1,6 @@
-input.txt
+data/*
 
 Models/*.php
 database/*.php
+
+__pycache__/*
