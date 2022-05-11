@@ -6,11 +6,45 @@ from create_file_from_template import create_insert_file, create_table_file, cre
 
 sw = stopwords.words('portuguese')
 
+def short_text(text):
+  mapper = {
+    'transferencia': 'transf',
+    'valor': 'val',
+    'remanejamento': 'reman',
+    'transposicao': 'transpos',
+    'codigo': 'cod',
+    'municipio': 'mun',
+    'documento': 'doc',
+    'movimentacoes': 'mov',
+    'recursos': 'rec',
+    'suplementado': 'supl',
+    'referencia': 'ref',
+    'documentacao': 'docum',
+    'despesas': 'des',
+    'orcamentarias': 'orcam',
+    'orcamentaria': 'orcam',
+    'bancarias': 'bancar'
+  }
+
+  new_text = ''
+  for word in text.split(" "):
+    lower_word = word.lower()
+
+    if lower_word in mapper:
+      mapped_word = mapper[lower_word]
+      new_text += mapped_word + ' '
+    else:
+      new_text += word + ' '
+  return new_text
+
 def create_camel_case(text, low_first_letter = True):
   text = unidecode.unidecode(text)
   text = re.sub("([\(\[]).*?([\)\]])", "\g<1>\g<2>", text)
   text = text.replace("()", "")
+  text = text.replace(",", "")
   text = text.replace("-", " ")
+
+  text = short_text(text)
   text = ''.join([k.capitalize() for k in text.split(" ") if k not in sw])
 
   if low_first_letter:
@@ -95,7 +129,7 @@ def create_new_entity_table(model_name, columns):
   create_model_file(model_name, model_mapper)
   create_insert_column_structure_file(insert_column_structure_filename, insert_column_structure_mapper)
 
-with open("input.txt") as input_file:
+with open("data/BAL.txt") as input_file:
   input_file_lines = input_file.readlines()
 
   name = ""
